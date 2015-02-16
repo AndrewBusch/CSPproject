@@ -13,8 +13,12 @@ public class Unary implements Constraint {
 	
 	@Override
 	public boolean checkConstraint() {
-		// TODO Auto-generated method stub
-		return false;
+		for(Bag i : bags) {
+			if(item.inBag.name == i.name) {
+				return inclusive;
+			}
+		}
+		return !inclusive;
 	}
 
 }

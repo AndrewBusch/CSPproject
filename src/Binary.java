@@ -2,18 +2,20 @@
 public class Binary implements Constraint {
 
 	boolean isEqual;
-	Bag bag1, bag2;
+	Item item1, item2;
 	
-	public Binary(boolean isEqual, Bag bag1, Bag bag2) {
+	public Binary(boolean isEqual, Item item1, Item item2) {
 		this.isEqual = isEqual;
-		this.bag1 = bag1;
-		this.bag2 = bag2;
+		this.item1 = item1;
+		this.item2 = item2;
 	}
 	
 	@Override
 	public boolean checkConstraint() {
-		// TODO Auto-generated method stub
-		return false;
+		if(item1.inBag.name == item2.inBag.name) {
+			return isEqual;
+		} else{
+			return !isEqual;
+		}
 	}
-
 }
