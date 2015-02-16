@@ -21,5 +21,11 @@ public class MutualExclusive implements Constraint {
 		}
 		return true;
 	}
+	
+	public String toString() {
+		String str = "";
+		str += item1.name + " " + item2.name + " " + bag1.name + " " + bag2.name;
+		return str;
+	}
 
 }

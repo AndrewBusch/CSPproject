@@ -20,5 +20,14 @@ public class Unary implements Constraint {
 		}
 		return !inclusive;
 	}
+	
+	public String toString() {
+		String str = "";
+		str += inclusive + " " + item.name;
+		for(Bag bg: bags) {
+			str += " " + bg.name;
+		}
+		return str;
+	}
 
 }

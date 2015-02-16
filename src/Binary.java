@@ -18,4 +18,10 @@ public class Binary implements Constraint {
 			return !isEqual;
 		}
 	}
+	
+	public String toString() {
+		String str = "";
+		str += isEqual + " " + item1.name + " " + item2.name;
+		return str;
+	}
 }
