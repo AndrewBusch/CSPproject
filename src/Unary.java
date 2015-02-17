@@ -4,6 +4,8 @@ public class Unary implements Constraint {
 	boolean inclusive;
 	Bag[] bags;
 	Item item;
+	int[] bagIndexes;
+	int itemIndex;
 	
 	public Unary(boolean inclusive, Bag[] bags, Item item) {
 		this.inclusive = inclusive;
@@ -11,19 +13,38 @@ public class Unary implements Constraint {
 		this.item = item;
 	}
 	
+	public Unary(boolean inclusive, Bag[] bags, Item item, int[] bagIndexes, int itemIndex) {
+		this.inclusive = inclusive;
+		this.bags = bags;
+		this.item = item;
+		this.bagIndexes = bagIndexes;
+		this.itemIndex = itemIndex;
+	}
+	
 	@Override
 	public boolean checkConstraint() {
+		//System.out.println(this);
 		for(Bag i : bags) {
-			if(item.inBag.name == i.name) {
-				return inclusive;
+			if(inclusive && (item.inBag == null) || (item.inBag != null && item.inBag.name == i.name)) {
+				return true;
+			} else if (inclusive) {
+				return false;
+			} else if (!inclusive && item.inBag != null && item.inBag.name == i.name) {
+				return false;
 			}
 		}
-		return !inclusive;
+		return true;
 	}
+	
+
+	public int type() {
+		return 0;
+	}
+	
 	
 	public String toString() {
 		String str = "";
-		str += inclusive + " " + item.name;
+		str += "inclusive: " + inclusive + " " + item.name;
 		for(Bag bg: bags) {
 			str += " " + bg.name;
 		}

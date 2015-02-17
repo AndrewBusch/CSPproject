@@ -25,7 +25,7 @@ public class DataParser {
 		System.out.println("Beginning Data Parsing...");
 		processFile();
 		System.out.println("Data Parsing Complete!");
-		printOut();
+		//printOut();
 	}
 
 	public static void processFile() throws IOException {
@@ -68,54 +68,71 @@ public class DataParser {
 				case 4:
 					Bag[] tempBags = new Bag[dataRow.size() - 1];
 					Item tempItem = null;
+					int itemIndex = 0;
+					int[] bagIndexes = new int[dataRow.size() -1];
 					int j = 0;
 					for (Item it : items) {
 						if (it.name == dataRow.get(0).charAt(0)) {
 							tempItem = it;
+							itemIndex = items.indexOf(it);
 							break;
 						}
 					}
 					for (Bag bg : bags) {
 						if (dataRow.contains((bg.name + ""))) {
-							tempBags[j++] = bg;
+							tempBags[j] = bg;
+							bagIndexes[j] = bags.indexOf(bg);
+							j++;
 						}
 					}
-					constraints.add(new Unary(inclusive, tempBags, tempItem));
+					constraints.add(new Unary(inclusive, tempBags, tempItem, bagIndexes, itemIndex));
 					break;
 				case 5:
 					isEqual = true;
 				case 6:
 					Item item1 = null;
 					Item item2 = null;
+					int item1Index = 0;
+					int item2Index = 0;
 					for (Item it : items) {
 						if (it.name == dataRow.get(0).charAt(0)) {
 							item1 = it;
+							item1Index = items.indexOf(it);
 						} else if (it.name == dataRow.get(1).charAt(0)) {
 							item2 = it;
+							item2Index = items.indexOf(it);
 						}
 					}
-					constraints.add(new Binary(isEqual, item1, item2));
+					constraints.add(new Binary(isEqual, item1, item2, item1Index, item2Index));
 					break;
 				case 7:
 					Item itm1 = null;
 					Item itm2 = null;
 					Bag bg1 = null;
 					Bag bg2 = null;
+					int itm1Index = 0;
+					int itm2Index = 0;
+					int bg1Index = 0;
+					int bg2Index = 0;
 					for (Item it : items) {
 						if (it.name == dataRow.get(0).charAt(0)) {
 							itm1 = it;
+							itm1Index = items.indexOf(it);
 						} else if (it.name == dataRow.get(1).charAt(0)) {
 							itm2 = it;
+							itm2Index = items.indexOf(it);
 						}
 					}
 					for (Bag bg : bags) {
 						if (bg.name == dataRow.get(2).charAt(0)) {
 							bg1 = bg;
+							bg1Index = bags.indexOf(bg);
 						} else if (bg.name == dataRow.get(3).charAt(0)) {
 							bg2 = bg;
+							bg2Index = bags.indexOf(bg);
 						}
 					}
-					constraints.add(new MutualExclusive(itm1, itm2, bg1, bg2));
+					constraints.add(new MutualExclusive(itm1, itm2, bg1, bg2, itm1Index, itm2Index, bg1Index, bg2Index));
 					break;
 				default:
 					break;
@@ -136,7 +153,7 @@ public class DataParser {
 		if(endState == null) {
 			pout("MASSIVE FAILURE: COULDN'T SOVLE SYSTEM");
 		} else{
-			endState.toString();
+			pout(endState.toString());
 		}
 		
 	}
