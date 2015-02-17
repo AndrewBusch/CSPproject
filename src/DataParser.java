@@ -128,6 +128,10 @@ public class DataParser {
 
 		br.close();
 		// bw.close();
+		
+		State start = new State(items, bags, constraints, MIN, MAX);
+		
+		start.backtrackingSearch();
 	}
 
 	public static void printOut() {
