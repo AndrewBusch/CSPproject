@@ -7,4 +7,8 @@ public class Bag {
 		this.name = name;
 		this.capacity = capacity;
 	}
+	
+	public String toString() {
+		return name + " of Cap: " + capacity;
+	}
 }
