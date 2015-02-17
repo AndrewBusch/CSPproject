@@ -129,9 +129,16 @@ public class DataParser {
 		br.close();
 		// bw.close();
 		
-		State start = new State(items, bags, constraints, MIN, MAX);
+		State startState = new State(items, bags, constraints, MIN, MAX);
 		
-		start.backtrackingSearch();
+		State endState = startState.backtrackingSearch();
+		
+		if(endState == null) {
+			pout("MASSIVE FAILURE: COULDN'T SOVLE SYSTEM");
+		} else{
+			endState.toString();
+		}
+		
 	}
 
 	public static void printOut() {
