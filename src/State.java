@@ -23,7 +23,7 @@ public class State {
 			weights.add(0);
 			itemsPerBag.add(0);
 		}
-				
+		updateAllowedItems();
 	}
 
 	public State(State csp) {
@@ -112,27 +112,65 @@ public class State {
 		if (CSP.getUnassignedItem() == null && CSP.weightCheck() && CSP.itemsPerCheck() && CSP.checkSystemConstraints()) {
 			return CSP;
 		}
+		CSP.updateAllowedItems();
+		if(!CSP.passForewardCheck()) {
+			return null;
+		}
 		for (int i = 0; i < items.size(); i++) {
 			if(CSP.items.get(i).inBag == null) {
 				for (int j = 0; j < bags.size(); j++) {
-					State newCSP = new State(CSP);
-					Item var = newCSP.items.get(i);
-					newCSP.weights.set(j, (CSP.weights.get(j) + var.weight));
-					newCSP.itemsPerBag.set(j, (CSP.itemsPerBag.get(j) + 1));
-					var.inBag = bags.get(j);
-					//System.out.println(var);
-					//System.out.println(newCSP);
-					if (weightCheck() && upperItemsPerCheck() && newCSP.checkSystemConstraints()) {
-						State testCSP = backtrack(newCSP);
-						//System.out.println(testCSP);
-						if (testCSP != null) {
-							return testCSP;
+					if(CSP.bags.get(j).allowedItems.contains(CSP.items.get(i))) {
+						State newCSP = new State(CSP);
+						Item var = newCSP.items.get(i);
+						newCSP.weights.set(j, (CSP.weights.get(j) + var.weight));
+						newCSP.itemsPerBag.set(j, (CSP.itemsPerBag.get(j) + 1));
+						var.inBag = bags.get(j);
+						//System.out.println(var);
+						//System.out.println(newCSP);
+						if (weightCheck() && upperItemsPerCheck() && newCSP.checkSystemConstraints()) {
+							State testCSP = backtrack(newCSP);
+							//System.out.println(testCSP);
+							if (testCSP != null) {
+								return testCSP;
+							}
 						}
 					}
 				}
 			}
 		}
 		return null;
+	}
+	
+	private boolean passForewardCheck() {
+		for(Item i : items) {
+			if(i.inBag == null) {
+				int occurance = 0;
+				for(Bag j : bags) {
+					if(j.allowedItems.contains(i)){
+						occurance++;
+					}
+				}
+				i.occurance = occurance;
+				if(occurance == 0) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public void updateAllowedItems() {
+		for(Item j : items) {
+			for(Bag i : bags) {
+				if( j.inBag == null) {
+					j.inBag = i;
+					if(weightCheck() && upperItemsPerCheck() && checkSystemConstraints()) {
+						i.allowedItems.add(j);
+					}
+					j.inBag = null;
+				}
+			}
+		}
 	}
 
 	private boolean itemsPerCheck() {
