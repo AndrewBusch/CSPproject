@@ -26,9 +26,28 @@ public class Unary implements Constraint {
 	}
 	
 	@Override
-	public boolean checkConstraint(State CSP) {
+	public boolean checkConstraint() {
+		
+		if(inclusive) {
+			for( Bag i : bags) {
+				if(item.inBag == null || (item.inBag != null && item.inBag.name == i.name)) {
+					 return true;
+				}
+			}
+			return false;
+		} else{
+			if(item.inBag == null) {
+				for( Bag i : bags) {
+					if(item.inBag != null && item.inBag.name == i.name) {
+						 return false;
+					}
+				}
+			}
+			return true;
+		}
+		
 		//System.out.println(this);
-		for(Bag i : bags) {
+		/*for(Bag i : bags) {
 			if(inclusive && (item.inBag == null) || (item.inBag != null && item.inBag.name == i.name)) {
 				return true;
 			} else if (inclusive) {
@@ -37,7 +56,7 @@ public class Unary implements Constraint {
 				return false;
 			}
 		}
-		return true;
+		return true;*/
 	}
 	
 

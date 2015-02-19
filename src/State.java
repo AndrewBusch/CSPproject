@@ -86,7 +86,7 @@ public class State {
 
 	public boolean checkSystemConstraints() {
 		for (Constraint i : this.constraints) {
-			if (!i.checkConstraint(this)) {
+			if (!i.checkConstraint()) {
 				return false;
 			}
 		}
@@ -103,13 +103,14 @@ public class State {
 	}
 
 	public State backtrackingSearch() {
-		//System.out.println(bags.toString());
+		//System.out.println(this.constraints.toString());
 		return backtrack(this);
 	}
 
 	private State backtrack(State CSP) {
 
-		System.out.println( CSP.toString());
+		//System.out.println( CSP.toString());
+		System.out.println(CSP.constraints.toString());
 		
 		if (CSP.getUnassignedItem() == null && CSP.weightCheck() && CSP.itemsPerCheck() && CSP.checkSystemConstraints()) {
 			return CSP;
