@@ -20,11 +20,10 @@ public class Binary implements Constraint {
 	}
 	
 	@Override
-	public boolean checkConstraint() {
-		//System.out.println(this);
-		if(isEqual && item1.inBag != null & item2.inBag!= null && item1.inBag.name != item2.inBag.name) {
+	public boolean checkConstraint( State CSP) {
+		if(isEqual && item1.inBag != null && item2.inBag!= null && item1.inBag.name != item2.inBag.name) {
 			return false;
-		} else if(!isEqual && item1.inBag != null & item2.inBag!= null && item1.inBag.name == item2.inBag.name) {
+		} else if(!isEqual && item1.inBag != null && item2.inBag!= null && item1.inBag.name == item2.inBag.name) {
 			return false;
 		} else {
 			return true;

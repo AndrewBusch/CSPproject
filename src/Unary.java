@@ -19,10 +19,14 @@ public class Unary implements Constraint {
 		this.item = item;
 		this.bagIndexes = bagIndexes;
 		this.itemIndex = itemIndex;
+		
+		for(Bag i : this.bags) {
+			i.constrainted += 1;
+		}
 	}
 	
 	@Override
-	public boolean checkConstraint() {
+	public boolean checkConstraint(State CSP) {
 		//System.out.println(this);
 		for(Bag i : bags) {
 			if(inclusive && (item.inBag == null) || (item.inBag != null && item.inBag.name == i.name)) {

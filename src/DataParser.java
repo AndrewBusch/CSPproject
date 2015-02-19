@@ -146,13 +146,18 @@ public class DataParser {
 		br.close();
 		// bw.close();
 		
+		if(MAX == 0) {
+			MAX = Integer.MAX_VALUE;
+		}
+		
 		State startState = new State(items, bags, constraints, MIN, MAX);
 		
 		State endState = startState.backtrackingSearch();
 		
 		if(endState == null) {
-			pout("MASSIVE FAILURE: COULDN'T SOVLE SYSTEM");
+			pout("MASSIVE FAILURE: COULDN'T SOLVE SYSTEM");
 		} else{
+			pout("success!");
 			pout(endState.toString());
 		}
 		

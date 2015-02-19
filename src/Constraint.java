@@ -1,7 +1,7 @@
 
 public interface Constraint {
 
-	public boolean checkConstraint();
+	public boolean checkConstraint( State CSP);
 	
 	public int type();
 }

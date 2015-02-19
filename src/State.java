@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Stack;
 
 public class State {
 	ArrayList<Item> items;
@@ -75,7 +76,7 @@ public class State {
 				this.constraints.add(new MutualExclusive(itm1, itm2, bag1, bag2, itm1Index, itm2Index, bag1Index, bag2Index));			
 				break;
 			default:
-					System.out.println("This shit shouldn't happen");
+					System.out.println("This shouldn't happen");
 					break;
 			}
 		}
@@ -85,12 +86,10 @@ public class State {
 
 	public boolean checkSystemConstraints() {
 		for (Constraint i : this.constraints) {
-			if (!i.checkConstraint()) {
-				//System.out.println("false");
+			if (!i.checkConstraint(this)) {
 				return false;
 			}
 		}
-		//System.out.println("true");
 		return true;
 	}
 
@@ -104,32 +103,39 @@ public class State {
 	}
 
 	public State backtrackingSearch() {
+		//System.out.println(bags.toString());
 		return backtrack(this);
 	}
 
 	private State backtrack(State CSP) {
-//		System.out.println(this);
+
+		System.out.println( CSP.toString());
+		
 		if (CSP.getUnassignedItem() == null && CSP.weightCheck() && CSP.itemsPerCheck() && CSP.checkSystemConstraints()) {
 			return CSP;
 		}
-		CSP.updateAllowedItems();
-		if(!CSP.passForewardCheck()) {
+		
+		CSP.updateAllowedItems();							// Forward Check
+		if(!CSP.passForwardCheck()) {
 			return null;
 		}
+		
+		Collections.sort(CSP.items);							// MRV heuristic
+		ArrayList<Bag> cpBags = new ArrayList<Bag>(CSP.bags);	// LCV heuristic
+		Collections.sort(cpBags);
+		
 		for (int i = 0; i < items.size(); i++) {
 			if(CSP.items.get(i).inBag == null) {
-				for (int j = 0; j < bags.size(); j++) {
-					if(CSP.bags.get(j).allowedItems.contains(CSP.items.get(i))) {
+				for (int k = 0; k < cpBags.size(); k++) {
+					int j = getBagIndexByChar(cpBags.get(k).name, CSP);
+					if(CSP.items.get(i).allowedBags.contains(CSP.bags.get(j))) {
 						State newCSP = new State(CSP);
 						Item var = newCSP.items.get(i);
 						newCSP.weights.set(j, (CSP.weights.get(j) + var.weight));
 						newCSP.itemsPerBag.set(j, (CSP.itemsPerBag.get(j) + 1));
 						var.inBag = bags.get(j);
-						//System.out.println(var);
-						//System.out.println(newCSP);
 						if (weightCheck() && upperItemsPerCheck() && newCSP.checkSystemConstraints()) {
 							State testCSP = backtrack(newCSP);
-							//System.out.println(testCSP);
 							if (testCSP != null) {
 								return testCSP;
 							}
@@ -141,17 +147,19 @@ public class State {
 		return null;
 	}
 	
-	private boolean passForewardCheck() {
+	private int getBagIndexByChar(char name, State CSP) {
+		for(Bag i : CSP.bags) {
+			if(i.name == name) {
+				return CSP.bags.indexOf(i);
+			}
+		}
+		return -1;
+	}
+	
+	private boolean passForwardCheck() {
 		for(Item i : items) {
 			if(i.inBag == null) {
-				int occurance = 0;
-				for(Bag j : bags) {
-					if(j.allowedItems.contains(i)){
-						occurance++;
-					}
-				}
-				i.occurance = occurance;
-				if(occurance == 0) {
+				if(i.allowedBags.size() == 0) {
 					return false;
 				}
 			}
@@ -160,12 +168,15 @@ public class State {
 	}
 
 	public void updateAllowedItems() {
-		for(Item j : items) {
-			for(Bag i : bags) {
+		for(Item i : items) {
+			i.allowedBags.clear();
+		}
+		for(Bag i : bags) {
+			for(Item j : items) {
 				if( j.inBag == null) {
 					j.inBag = i;
 					if(weightCheck() && upperItemsPerCheck() && checkSystemConstraints()) {
-						i.allowedItems.add(j);
+						j.allowedBags.add(i);
 					}
 					j.inBag = null;
 				}
@@ -202,6 +213,16 @@ public class State {
 
 	@Override
 	public String toString() {
-		return items.toString();
+		String ret = "";
+		for(Bag i : bags) {
+			ret += i.name + " ";
+			for(Item j : items) {
+				if(j.inBag == i) {
+					ret += j.name + " ";
+				}
+			}
+			ret +=  "\n";
+		}
+		return ret;
 	}
 }
