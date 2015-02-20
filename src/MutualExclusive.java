@@ -31,7 +31,7 @@ public class MutualExclusive implements Constraint {
 	}
 	
 	@Override
-	public boolean checkConstraint(State CSP) {
+	public boolean checkConstraint() {
 		//System.out.println(this);
 		if(item1.inBag != null && item2.inBag != null && item1.inBag.name == bag1.name && item2.inBag.name == bag2.name) {
 			return false;

@@ -26,21 +26,26 @@ public class Unary implements Constraint {
 	}
 	
 	@Override
-	public boolean checkConstraint(State CSP) {
-		//System.out.println(this);
-		for(Bag i : bags) {
-			if(inclusive && (item.inBag == null) || (item.inBag != null && item.inBag.name == i.name)) {
-				return true;
-			} else if (inclusive) {
-				return false;
-			} else if (!inclusive && item.inBag != null && item.inBag.name == i.name) {
-				return false;
-			}
-		}
-		return true;
+	public boolean checkConstraint() {
+        if(inclusive) {
+            for( Bag i : bags) {
+                if(item.inBag == null || (item.inBag != null && item.inBag.name == i.name)) {
+                     return true;
+                }
+            }
+            return false;
+        } else{
+            if(item.inBag == null) {
+                for( Bag i : bags) {
+                    if(item.inBag != null && item.inBag.name == i.name) {
+                         return false;
+                    }
+                }
+            }
+            return true;
+        }
 	}
 	
-
 	public int type() {
 		return 0;
 	}

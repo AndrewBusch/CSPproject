@@ -18,13 +18,12 @@ public class DataParser {
 	static ArrayList<Item> items = new ArrayList<Item>();
 	static ArrayList<Bag> bags = new ArrayList<Bag>();
 	static ArrayList<Constraint> constraints = new ArrayList<Constraint>();
+	static int nodeCount = 0;
 
 	public static void main(String[] args) throws IOException {
 		inputFileName = args[0];
 		// outputFileName = args[1];
-		System.out.println("Beginning Data Parsing...");
 		processFile();
-		System.out.println("Data Parsing Complete!");
 		//printOut();
 	}
 
@@ -139,28 +138,23 @@ public class DataParser {
 				}
 			}
 		}
-
-		// bw.write(currentLine);
-		// bw.newLine();
-
-		br.close();
-		// bw.close();
-		
 		if(MAX == 0) {
 			MAX = Integer.MAX_VALUE;
 		}
+	
+		br.close();
+		System.out.println("Data Parsing Complete");
+		// bw.close();
 		
 		State startState = new State(items, bags, constraints, MIN, MAX);
-		
 		State endState = startState.backtrackingSearch();
 		
 		if(endState == null) {
-			pout("MASSIVE FAILURE: COULDN'T SOLVE SYSTEM");
+			pout("System Unsolvable.");
 		} else{
 			pout("success!");
 			pout(endState.toString());
 		}
-		
 	}
 
 	public static void printOut() {
